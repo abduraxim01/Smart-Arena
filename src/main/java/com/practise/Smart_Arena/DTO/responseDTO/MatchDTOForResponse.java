@@ -21,5 +21,5 @@ public class MatchDTOForResponse {
 
     private UUID polyaId;
 
-    private UUID teamId;
+    private UUID bookerId;
 }

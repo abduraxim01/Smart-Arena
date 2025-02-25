@@ -43,20 +43,7 @@ public class PlayerMapper {
                 .residence(player.getResidence())
                 .commentList(commentMap.toDTO(player.getCommentList()))
                 .team(player.getTeam())
-                .build();
-    }
-
-    public PlayerDTOForResponse toDTOWithoutTeam(Player player) {
-        return PlayerDTOForResponse.builder()
-                .id(player.getId())
-                .name(player.getName())
-                .surname(player.getSurname())
-                .phoneNumber(player.getPhoneNumber())
-                .birthday(player.getBirthday())
-                .birthdayPlace(player.getBirthdayPlace())
-                .residence(player.getResidence())
-                .commentList(commentMap.toDTO(player.getCommentList()))
-                .team(player.getTeam())
+                .isTeamOwner(player.isTeamOwner())
                 .build();
     }
 

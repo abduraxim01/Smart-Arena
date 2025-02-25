@@ -14,8 +14,8 @@ public class MatchMapper {
         return MatchDTOForResponse.builder()
                 .id(match.getId())
                 .day(match.getDay())
-                .teamId(match.getTeam().getId())
-                .polyaId(match.getTeam().getId())
+                .bookerId(match.getPlayer().getId())
+                .polyaId(match.getPolya().getId())
                 .time(match.getTime())
                 .build();
     }

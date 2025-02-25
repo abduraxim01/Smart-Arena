@@ -30,18 +30,18 @@ public class TeamService {
     }
 
     public TeamDTOForResponse createTeam(TeamDTOForRequest teamDTO) {
-        List<Player> playerList = teamDTO.getPlayersId().stream()
-                .map(id -> playerRep.findById(id).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Player not found")))
-                .toList();
+        Player player = playerRep.findById(teamDTO.getCreatorId()).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Player not found"));
         Team team = Team.builder()
                 .name(teamDTO.getName())
-                .playerList(playerList)
+                .playerList(List.of(player))
                 .build();
         Team teamFromDB = teamRep.save(team);
-        for (Player player : playerList) {
-            player.setTeam(team);
-            playerRep.save(player);
-        }
+        player.setTeam(teamFromDB);
+        player.setTeamOwner(true);
+        playerRep.save(player);
         return teamMap.toDTO(teamFromDB);
     }
+
+    // if user mark as accept invite message, it will join automatically
+    // must write addPlayerToTeam method
 }

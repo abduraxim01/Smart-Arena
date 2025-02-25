@@ -17,7 +17,7 @@ public class MatchDTOForRequest {
 
     private LocalTime time;
 
-    private UUID teamId;
+    private UUID bookerId;
 
     private UUID polyaId;
 }
