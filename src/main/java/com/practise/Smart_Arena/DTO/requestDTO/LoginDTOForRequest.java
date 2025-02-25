@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OtpDTO {
+public class LoginDTOForRequest {
 
     private String phoneNumber;
 

@@ -6,7 +6,10 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,10 +21,12 @@ import java.time.LocalDateTime;
 public class Match {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(generator = "UUID")
+    private UUID id;
 
-    private LocalDateTime dateTime;
+    private LocalDate day;
+
+    private LocalTime time;
 
     @ManyToOne
     @JoinColumn(name = "booker_id")

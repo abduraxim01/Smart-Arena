@@ -37,7 +37,7 @@ public class PolyaDTOForResponse {
 
     private List<Status> statusList;
 
-    private List<Comment> commentList;
+    private List<CommentDTOForResponse> commentList;
 
     private List<Match> matchList;
 }

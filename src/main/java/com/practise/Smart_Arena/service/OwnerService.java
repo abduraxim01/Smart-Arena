@@ -1,7 +1,6 @@
 package com.practise.Smart_Arena.service;
 
 import com.practise.Smart_Arena.DTO.requestDTO.OwnerDTOForRequest;
-import com.practise.Smart_Arena.DTO.requestDTO.StadiumDTOForRequest;
 import com.practise.Smart_Arena.DTO.responseDTO.OwnerDTOForResponse;
 import com.practise.Smart_Arena.mapper.OwnerMapper;
 import com.practise.Smart_Arena.exception.AllExceptions;
@@ -22,11 +21,10 @@ public class OwnerService {
 
     final private Logger log = LogManager.getLogger(OwnerService.class);
 
+    final private PhoneNumberFilter phoneNumberFilter = new PhoneNumberFilter();
+
     public OwnerDTOForResponse registerOwner(OwnerDTOForRequest ownerDTO) throws ConstraintViolationException {
-        if (isValidPhoneNumber(ownerDTO.getPhoneNumber())) {
-            log.error("Phone number is incorrect: {}", ownerDTO.getPhoneNumber());
-            throw new AllExceptions.IllegalArgumentException("Phone number is incorrect: " + ownerDTO.getPhoneNumber());
-        }
+        phoneNumberFilter.isValidPhoneNumber(ownerDTO.getPhoneNumber());
         if (ownRep.existsByPhoneNumber(ownerDTO.getPhoneNumber())) {
             log.error("Phone number already exists: {}", ownerDTO.getPhoneNumber());
             throw new AllExceptions.UsernameAlreadyTakenException("Phone number already exists: " + ownerDTO.getPhoneNumber());
@@ -40,11 +38,6 @@ public class OwnerService {
             throw new AllExceptions.IllegalArgumentException("User's passport must be at least 9 characters");
         }
         log.info("New owner registered name: {} phone number: {}", ownerDTO.getName(), ownerDTO.getPhoneNumber());
-        return ownMap.toDTO(ownRep.save(ownMap.toMODEL(ownerDTO)));
-    }
-
-    public boolean isValidPhoneNumber(String phoneNumber) { // if number is true  method return false , number is false method return true
-        String regex = "^\\+998(20|33|90|91|93|94|99)\\d{7}$";
-        return !phoneNumber.trim().matches(regex);
+        return ownMap.toDTO(ownRep.save(ownMap.toModel(ownerDTO)));
     }
 }

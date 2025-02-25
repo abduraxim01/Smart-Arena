@@ -25,11 +25,14 @@ public class SecurityConfiguration {
     @Autowired
     private JwtFilter jwtFilter;
 
-    final private String[] WHITE_LIST = {"/api/login/numberValidate", "/api/login/otpCheck", "/api/owner/registerOwner"};
+    final private String[] WHITE_LIST = {"/api/login/numberValidate", "/api/login/otpCheck", "/api/owner/registerOwner", "/api/player/registerPlayer"};
 
     final private String STADIUM_API = "/api/stadium";
     final private String QULAYLIKLAR_API = "/api/qulayliklar";
     final private String POLYA_API = "/api/polya";
+    final private String COMMENT_API = "/api/comment";
+    final private String TEAM_API = "/api/team";
+    final private String STATUS_API = "/api/status";
 
     @Autowired
     private LoginService logSer;
@@ -43,7 +46,11 @@ public class SecurityConfiguration {
                             .requestMatchers(WHITE_LIST).permitAll()
                             .requestMatchers(STADIUM_API + "/createStadium/{ownerId}").hasRole("OWNER")
                             .requestMatchers(QULAYLIKLAR_API + "/createQulayliklar/{stadiumId}").hasRole("OWNER")
-                            .requestMatchers(POLYA_API + "/createPolya/{stadiumId}").hasRole("OWNER");
+                            .requestMatchers(POLYA_API + "/createPolya/{stadiumId}").hasRole("OWNER")
+                            .requestMatchers(TEAM_API + "/createTeam").hasRole("PLAYER")
+                            .requestMatchers(STATUS_API + "/createStatus").hasRole("PLAYER")
+                            .requestMatchers(COMMENT_API + "/createComment").hasRole("PLAYER")
+                            .anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults())

@@ -7,7 +7,9 @@ import com.practise.Smart_Arena.model.privileges.Role;
 
 public class OwnerMapper {
 
-    public Owner toMODEL(OwnerDTOForRequest ownerDTO) {
+    final private StadiumMapper stadiumMap = new StadiumMapper();
+
+    public Owner toModel(OwnerDTOForRequest ownerDTO) {
         return Owner.builder()
                 .name(ownerDTO.getName())
                 .surname(ownerDTO.getSurname())
@@ -26,7 +28,7 @@ public class OwnerMapper {
                 .birthday(owner.getBirthday())
                 .passport(owner.getPassport())
                 .phoneNumber(owner.getPhoneNumber())
-                .stadiumList(owner.getStadiumList())
+                .stadiumList(stadiumMap.toDTO(owner.getStadiumList()))
                 .build();
     }
 }
