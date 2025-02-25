@@ -28,7 +28,7 @@ public class Status {
 
     private LocalTime endTime;
 
-    private int booker_id;
+    private UUID bookerId;
 
     @ManyToOne
     @JoinColumn(name = "polya_id")

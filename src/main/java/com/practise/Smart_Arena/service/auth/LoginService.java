@@ -1,9 +1,12 @@
 package com.practise.Smart_Arena.service.auth;
 
 import com.practise.Smart_Arena.DTO.OtpEntry;
-import com.practise.Smart_Arena.DTO.requestDTO.OtpDTO;
+import com.practise.Smart_Arena.DTO.requestDTO.LoginDTOForRequest;
+import com.practise.Smart_Arena.DTO.responseDTO.LoginDTOForResponse;
 import com.practise.Smart_Arena.exception.AllExceptions;
 import com.practise.Smart_Arena.repository.OwnerRepository;
+import com.practise.Smart_Arena.repository.PlayerRepository;
+import com.practise.Smart_Arena.service.PhoneNumberFilter;
 import com.practise.Smart_Arena.service.jwtService.JwtUtil;
 import com.practise.Smart_Arena.service.smsService.SendSMSService;
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +23,10 @@ import java.util.concurrent.TimeUnit;
 public class LoginService implements UserDetailsService {
 
     @Autowired
-    private OwnerRepository ownRep;
+    private OwnerRepository ownerRep;
+
+    @Autowired
+    private PlayerRepository playerRep;
 
     @Autowired
     private SendSMSService smsSer;
@@ -32,14 +38,18 @@ public class LoginService implements UserDetailsService {
 
     final private Logger log = LogManager.getLogger(LoginService.class);
 
+    final private PhoneNumberFilter phoneNumberFilter = new PhoneNumberFilter();
+
     @Override
     public UserDetails loadUserByUsername(String phoneNumber) {
-        return ownRep.findByPhoneNumber(phoneNumber);
+        if (ownerRep.existsByPhoneNumber(phoneNumber)) return ownerRep.findByPhoneNumber(phoneNumber);
+        if (playerRep.existsByPhoneNumber(phoneNumber)) return playerRep.findByPhoneNumber(phoneNumber);
+        return null;
     }
 
     public void numberValidate(String phoneNumber) {
-        isValidPhoneNumber(phoneNumber);
-        if (ownRep.existsByPhoneNumber(phoneNumber)) {
+        phoneNumberFilter.isValidPhoneNumber(phoneNumber);
+        if (ownerRep.existsByPhoneNumber(phoneNumber) || playerRep.existsByPhoneNumber(phoneNumber)) {
             String otp = smsSer.sendSMSForAuth(phoneNumber);
             storeOtp(phoneNumber, otp);
             log.info("Otp sent to {} , code: {}", phoneNumber, otp);
@@ -54,13 +64,25 @@ public class LoginService implements UserDetailsService {
         otpCache.put(phoneNumber, new OtpEntry(otp, expiryTime));
     }
 
-    public String otpCheck(OtpDTO otpDTO) {
-        isValidPhoneNumber(otpDTO.getPhoneNumber());
-        if (verifyOtp(otpDTO.getPhoneNumber(), otpDTO.getCode())) {
-            log.info("User successfully done in login phoneNumber: {}", otpDTO.getPhoneNumber());
-            return jwtUtil.encode(otpDTO.getPhoneNumber());
+    public LoginDTOForResponse otpCheck(LoginDTOForRequest loginDTOForRequest) {
+        phoneNumberFilter.isValidPhoneNumber(loginDTOForRequest.getPhoneNumber());
+        if (verifyOtp(loginDTOForRequest.getPhoneNumber(), loginDTOForRequest.getCode())) {
+            log.info("User successfully done in login phoneNumber: {}", loginDTOForRequest.getPhoneNumber());
+            String role = loadUserByUsername(loginDTOForRequest.getPhoneNumber()).getAuthorities().toString();
+            if (role.substring(6, role.length() - 1).equals("OWNER"))
+                return LoginDTOForResponse.builder()
+                        .id(ownerRep.findByPhoneNumber(loginDTOForRequest.getPhoneNumber()).getId())
+                        .token(jwtUtil.encode(loginDTOForRequest.getPhoneNumber()))
+                        .role("OWNER")
+                        .build();
+            else return LoginDTOForResponse.builder()
+                    .id(playerRep.findByPhoneNumber(loginDTOForRequest.getPhoneNumber()).getId())
+                    .token(jwtUtil.encode(loginDTOForRequest.getPhoneNumber()))
+                    .role("PLAYER")
+                    .build();
+
         }
-        throw new AllExceptions.IllegalArgumentException("Otp code is invalid: " + otpDTO.getCode());
+        throw new AllExceptions.IllegalArgumentException("Otp code is invalid: " + loginDTOForRequest.getCode());
     }
 
     public boolean verifyOtp(String phoneNumber, String enteredOtp) {
@@ -70,13 +92,5 @@ public class LoginService implements UserDetailsService {
             return false;
         }
         return entry.getOtp().equals(enteredOtp);
-    }
-
-    public void isValidPhoneNumber(String phoneNumber) {
-        String regex = "^\\+998(20|33|90|91|93|94|99)\\d{7}$";
-        if (!phoneNumber.trim().matches(regex)) {
-            log.error("Phone number is invalid: {}", phoneNumber);
-            throw new AllExceptions.IllegalArgumentException("Phone number is invalid: " + phoneNumber);
-        }
     }
 }

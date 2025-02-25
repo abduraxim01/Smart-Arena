@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @Setter
@@ -16,8 +18,8 @@ import lombok.*;
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(generator = "UUID")
+    private UUID id;
 
     private String body;
 
@@ -30,4 +32,6 @@ public class Comment {
     @JsonBackReference
     @JoinColumn(name = "player_id")
     private Player player;
+
+    private float star;
 }

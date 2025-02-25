@@ -1,10 +1,12 @@
 package com.practise.Smart_Arena.DTO.responseDTO;
 
+import com.practise.Smart_Arena.model.owner.Qulayliklar;
 import lombok.*;
 import org.springframework.data.geo.Point;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,5 +35,7 @@ public class StadiumDTOForResponse {
 
     private Set<String> socialMediaAccounts;
 
-    // Qulayliklar va PolyaList qo'shilishi kerak
+    private List<PolyaDTOForResponse> polyaList;
+
+    private Qulayliklar qulayliklar;
 }

@@ -4,6 +4,7 @@ import com.practise.Smart_Arena.DTO.requestDTO.QulayliklarDTOForRequest;
 import com.practise.Smart_Arena.model.owner.Qulayliklar;
 import com.practise.Smart_Arena.model.owner.Stadium;
 
+
 public class QulayliklarMapper {
 
     public Qulayliklar toModel(QulayliklarDTOForRequest qulayDTO, Stadium stadium) {

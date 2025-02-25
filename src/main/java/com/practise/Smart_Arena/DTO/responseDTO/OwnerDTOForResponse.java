@@ -1,6 +1,5 @@
 package com.practise.Smart_Arena.DTO.responseDTO;
 
-import com.practise.Smart_Arena.model.owner.Stadium;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -26,5 +25,5 @@ public class OwnerDTOForResponse {
 
     private String phoneNumber;
 
-    private List<Stadium> stadiumList;
+    private List<StadiumDTOForResponse> stadiumList;
 }

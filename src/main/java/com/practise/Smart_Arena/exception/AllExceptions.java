@@ -81,4 +81,13 @@ public class AllExceptions {
             super(message);
         }
     }
+
+    @Getter
+    public static class DataIntegrityViolationException extends RuntimeException {
+        private final HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        public DataIntegrityViolationException(String message) {
+            super(message);
+        }
+    }
 }

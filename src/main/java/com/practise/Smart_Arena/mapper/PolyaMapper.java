@@ -6,9 +6,12 @@ import com.practise.Smart_Arena.model.owner.Polya;
 import com.practise.Smart_Arena.model.owner.Stadium;
 import com.practise.Smart_Arena.model.owner.TypePolya;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PolyaMapper {
+
+    final private CommentMapper commentMap = new CommentMapper();
 
     public Polya toModel(PolyaDTOForRequest polyaDTO, List<String> imagesUrlList, Stadium stadium) {
         return Polya.builder()
@@ -25,7 +28,7 @@ public class PolyaMapper {
         return PolyaDTOForResponse.builder()
                 .id(polya.getId())
                 .size(polya.getSize())
-                .commentList(polya.getCommentList())
+                .commentList(commentMap.toDTO(polya.getCommentList()))
                 .statusList(polya.getStatusList())
                 .matchList(polya.getMatchList())
                 .imagesUrl(polya.getImagesUrl())
@@ -33,5 +36,12 @@ public class PolyaMapper {
                 .prise(polya.getPrise())
                 .type(polya.getType().name())
                 .build();
+    }
+
+    public List<PolyaDTOForResponse> toDTO(List<Polya> polyaList) {
+        if (polyaList == null) return new ArrayList<>();
+        return polyaList.stream()
+                .map(this::toDTO)
+                .toList();
     }
 }
