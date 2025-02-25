@@ -1,6 +1,5 @@
 package com.practise.Smart_Arena.DTO.responseDTO;
 
-import com.practise.Smart_Arena.model.player.Match;
 import com.practise.Smart_Arena.model.player.Player;
 import lombok.*;
 
@@ -19,7 +18,4 @@ public class TeamDTOForResponse {
     private String name;
 
     private List<Player> playerList;
-
-    private List<Match> matchList;
-
 }

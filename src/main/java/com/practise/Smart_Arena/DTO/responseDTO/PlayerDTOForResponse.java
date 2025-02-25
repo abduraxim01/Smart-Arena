@@ -35,6 +35,8 @@ public class PlayerDTOForResponse {
 
     private String residence;
 
+    private boolean isTeamOwner;
+
     private List<CommentDTOForResponse> commentList;
 
     private Team team;

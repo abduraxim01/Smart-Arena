@@ -7,6 +7,7 @@ import com.practise.Smart_Arena.exception.AllExceptions;
 import com.practise.Smart_Arena.mapper.StatusMapper;
 import com.practise.Smart_Arena.model.owner.Polya;
 import com.practise.Smart_Arena.model.owner.Status;
+import com.practise.Smart_Arena.repository.PlayerRepository;
 import com.practise.Smart_Arena.repository.PolyaRepository;
 import com.practise.Smart_Arena.repository.StatusRepository;
 import com.practise.Smart_Arena.repository.TeamRepository;
@@ -22,6 +23,8 @@ public class StatusService {
 
     final private TeamRepository teamRep;
 
+    final private PlayerRepository playerRep;
+
     final private PolyaRepository polyaRep;
 
     final private MatchService matchSer;
@@ -31,8 +34,9 @@ public class StatusService {
     final private StatusMapper statusMap;
 
     @Autowired
-    public StatusService(TeamRepository teamRep, PolyaRepository polyaRep, MatchService matchSer, StatusRepository statusRep, StatusMapper statusMap) {
+    public StatusService(TeamRepository teamRep, PlayerRepository playerRep, PolyaRepository polyaRep, MatchService matchSer, StatusRepository statusRep, StatusMapper statusMap) {
         this.teamRep = teamRep;
+        this.playerRep = playerRep;
         this.polyaRep = polyaRep;
         this.matchSer = matchSer;
         this.statusRep = statusRep;
@@ -40,7 +44,7 @@ public class StatusService {
     }
 
     public MatchDTOForResponse createStatus(StatusDTOForRequest statusDTO) {
-        teamRep.findById(statusDTO.getBookerId()).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Team not found"));
+        playerRep.findById(statusDTO.getBookerId()).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Player not found"));
         Polya polya = polyaRep.findById(statusDTO.getPolyaId()).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Polya not found"));
         if (isBooked(polya.getStatusList(), statusDTO.getDay(), statusDTO.getStartTime(), statusDTO.getEndTime())) {
             statusRep.save(statusMap.toModel(statusDTO, polya));
@@ -53,7 +57,7 @@ public class StatusService {
         for (Status status : statusListFromBase) {
             if (!status.getDay().equals(day)) return true;
             if (startTime.isAfter(endTime) || status.getStartTime().isBefore(endTime) || status.getStartTime().isBefore(startTime) && status.getEndTime().isAfter(startTime))
-                    return false;
+                return false;
         }
         return true;
     }

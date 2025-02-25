@@ -31,10 +31,12 @@ public class Match {
     @ManyToOne
     @JoinColumn(name = "booker_id")
     @JsonBackReference
-    private Team team;
+    private Player player;
 
     @ManyToOne
     @JoinColumn(name = "polya_id")
     @JsonBackReference
     private Polya polya;
+
+    // player va teamni qo'wiwni oýlab koriw
 }

@@ -27,7 +27,7 @@ public class Team {
     @JsonManagedReference
     private List<Player> playerList;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Match> matchList;
+//    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<Match> matchList;
 }

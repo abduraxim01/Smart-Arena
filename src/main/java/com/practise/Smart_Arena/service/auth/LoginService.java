@@ -12,10 +12,12 @@ import com.practise.Smart_Arena.service.smsService.SendSMSService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -68,18 +70,20 @@ public class LoginService implements UserDetailsService {
         phoneNumberFilter.isValidPhoneNumber(loginDTOForRequest.getPhoneNumber());
         if (verifyOtp(loginDTOForRequest.getPhoneNumber(), loginDTOForRequest.getCode())) {
             log.info("User successfully done in login phoneNumber: {}", loginDTOForRequest.getPhoneNumber());
-            String role = loadUserByUsername(loginDTOForRequest.getPhoneNumber()).getAuthorities().toString();
-            if (role.substring(6, role.length() - 1).equals("OWNER"))
-                return LoginDTOForResponse.builder()
-                        .id(ownerRep.findByPhoneNumber(loginDTOForRequest.getPhoneNumber()).getId())
-                        .token(jwtUtil.encode(loginDTOForRequest.getPhoneNumber()))
-                        .role("OWNER")
-                        .build();
-            else return LoginDTOForResponse.builder()
-                    .id(playerRep.findByPhoneNumber(loginDTOForRequest.getPhoneNumber()).getId())
-                    .token(jwtUtil.encode(loginDTOForRequest.getPhoneNumber()))
-                    .role("PLAYER")
-                    .build();
+            removeOtp(loginDTOForRequest.getPhoneNumber());
+            return generateResponse(loadUserByUsername(loginDTOForRequest.getPhoneNumber()), loginDTOForRequest.getPhoneNumber());
+//            String role = loadUserByUsername(loginDTOForRequest.getPhoneNumber()).getAuthorities().toString();
+//            if (role.substring(6, role.length() - 1).equals("OWNER"))
+//                return LoginDTOForResponse.builder()
+//                        .id(ownerRep.findByPhoneNumber(loginDTOForRequest.getPhoneNumber()).getId())
+//                        .token(jwtUtil.encode(loginDTOForRequest.getPhoneNumber()))
+//                        .role("OWNER")
+//                        .build();
+//            else return LoginDTOForResponse.builder()
+//                    .id(playerRep.findByPhoneNumber(loginDTOForRequest.getPhoneNumber()).getId())
+//                    .token(jwtUtil.encode(loginDTOForRequest.getPhoneNumber()))
+//                    .role("PLAYER")
+//                    .build();
 
         }
         throw new AllExceptions.IllegalArgumentException("Otp code is invalid: " + loginDTOForRequest.getCode());
@@ -92,5 +96,32 @@ public class LoginService implements UserDetailsService {
             return false;
         }
         return entry.getOtp().equals(enteredOtp);
+    }
+
+    public void removeOtp(String phoneNumber) {
+        otpCache.remove(phoneNumber);
+    }
+
+    public LoginDTOForResponse generateResponse(UserDetails user, String phoneNumber) {
+        Map<String, List<String>> permissionsMap = new HashMap<>();
+        String role = "";
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+        int index;
+        String authorityName;
+
+        for (GrantedAuthority authority : authorities) {
+            authorityName = authority.getAuthority();
+            index = authorityName.indexOf("_");
+            if (!authorityName.startsWith("ROLE_")) {
+                permissionsMap.computeIfAbsent(authorityName.substring(0, index), k -> new ArrayList<>()).add(authorityName.substring(index + 1));
+            } else role = authorityName.substring(index + 1);
+        }
+
+        return LoginDTOForResponse.builder()
+                .userId(null) // proyektga to'g'irlaw kere
+                .role(role)
+                .permissions(permissionsMap)
+                .token(jwtUtil.encode(phoneNumber))
+                .build();
     }
 }
