@@ -4,7 +4,9 @@ import com.practise.Smart_Arena.DTO.requestDTO.PolyaDTOForRequest;
 import com.practise.Smart_Arena.DTO.responseDTO.PolyaDTOForResponse;
 import com.practise.Smart_Arena.exception.AllExceptions;
 import com.practise.Smart_Arena.mapper.PolyaMapper;
+import com.practise.Smart_Arena.model.owner.Polya;
 import com.practise.Smart_Arena.model.owner.Stadium;
+import com.practise.Smart_Arena.repository.CommentRepository;
 import com.practise.Smart_Arena.repository.PolyaRepository;
 import com.practise.Smart_Arena.repository.StadiumRepository;
 import com.practise.Smart_Arena.service.imageService.ImageService;
@@ -18,20 +20,31 @@ import java.util.UUID;
 @Service
 public class PolyaService {
 
-    @Autowired
-    private PolyaRepository polyaRep;
+    final private PolyaRepository polyaRep;
 
-    @Autowired
-    private StadiumRepository stadiumRep;
+    final private StadiumRepository stadiumRep;
 
-    @Autowired
-    private ImageService imageSer;
+    final private CommentRepository commentRep;
+
+    final private ImageService imageSer;
 
     final private PolyaMapper polyaMap = new PolyaMapper();
+
+    @Autowired
+    public PolyaService(PolyaRepository polyaRep, StadiumRepository stadiumRep, CommentRepository commentRep, ImageService imageSer) {
+        this.polyaRep = polyaRep;
+        this.stadiumRep = stadiumRep;
+        this.commentRep = commentRep;
+        this.imageSer = imageSer;
+    }
 
     public PolyaDTOForResponse createPolya(PolyaDTOForRequest polyaDTO, List<MultipartFile> images, UUID stadiumId) {
         Stadium stadium = stadiumRep.findById(stadiumId).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Stadium not found"));
         List<String> imageUrlList = imageSer.saveImages(images);
         return polyaMap.toDTO(polyaRep.save(polyaMap.toModel(polyaDTO, imageUrlList, stadium)));
+    }
+
+    public List<PolyaDTOForResponse> getTopPolyas() {
+        return polyaMap.toDTO(polyaRep.findAll()).stream().sorted().toList();
     }
 }

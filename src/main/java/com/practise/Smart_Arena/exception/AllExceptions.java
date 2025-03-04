@@ -90,4 +90,13 @@ public class AllExceptions {
             super(message);
         }
     }
+
+    @Getter
+    public static class InternalServerError extends RuntimeException {
+        private final HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        public InternalServerError(String message) {
+            super(message);
+        }
+    }
 }

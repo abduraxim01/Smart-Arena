@@ -41,9 +41,12 @@ public class PlayerMapper {
                 .birthday(player.getBirthday())
                 .birthdayPlace(player.getBirthdayPlace())
                 .residence(player.getResidence())
-                .commentList(commentMap.toDTO(player.getCommentList()))
+//                .commentList(commentMap.toDTO(player.getCommentList()))
                 .team(player.getTeam())
                 .isTeamOwner(player.isTeamOwner())
+                .matchList(player.getMatchList())
+                .playerMatchStats(player.getPlayerMatchStats())
+                .isOpenJoin(player.isOpenJoin())
                 .build();
     }
 

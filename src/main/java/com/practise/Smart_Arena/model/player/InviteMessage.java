@@ -20,15 +20,15 @@ public class InviteMessage {
 
     private UUID senderId;
 
-    private UUID teamId; // Email of the team lead
+    private UUID teamId;
 
-    private UUID recipientId; // Email of the recipient
+    private UUID recipientId;
 
-    private String teamName; // Name of the group to join
+    private String teamName;
 
     private String message;
 
     @OneToOne(mappedBy = "inviteMessage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private PlayerResponse response;
+    private ResponseMessage response;
 }

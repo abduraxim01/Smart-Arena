@@ -38,8 +38,6 @@ public class Stadium {
 
     private String locationName;
 
-//    @Column(columnDefinition = "GEOMETRY(Point,4326)", nullable = false)
-//    @JdbcTypeCode(SqlTypes.GEOMETRY)
     private Point locationPoint;
 
     private String rules;

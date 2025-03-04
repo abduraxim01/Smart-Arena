@@ -62,28 +62,16 @@ public class LoginService implements UserDetailsService {
     }
 
     public void storeOtp(String phoneNumber, String otp) {
-        long expiryTime = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5000 * 60);  // OTP expires in 5 minutes
+        long expiryTime = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(3000 * 60);  // OTP expires in 3 minutes
         otpCache.put(phoneNumber, new OtpEntry(otp, expiryTime));
     }
 
     public LoginDTOForResponse otpCheck(LoginDTOForRequest loginDTOForRequest) {
         phoneNumberFilter.isValidPhoneNumber(loginDTOForRequest.getPhoneNumber());
         if (verifyOtp(loginDTOForRequest.getPhoneNumber(), loginDTOForRequest.getCode())) {
-            log.info("User successfully done in login phoneNumber: {}", loginDTOForRequest.getPhoneNumber());
+            log.info("User successfully login as {}  phoneNumber: {}", loginDTOForRequest.isOwner() ? "OWNER" : "PLAYER", loginDTOForRequest.getPhoneNumber());
             removeOtp(loginDTOForRequest.getPhoneNumber());
-            return generateResponse(loadUserByUsername(loginDTOForRequest.getPhoneNumber()), loginDTOForRequest.getPhoneNumber());
-//            String role = loadUserByUsername(loginDTOForRequest.getPhoneNumber()).getAuthorities().toString();
-//            if (role.substring(6, role.length() - 1).equals("OWNER"))
-//                return LoginDTOForResponse.builder()
-//                        .id(ownerRep.findByPhoneNumber(loginDTOForRequest.getPhoneNumber()).getId())
-//                        .token(jwtUtil.encode(loginDTOForRequest.getPhoneNumber()))
-//                        .role("OWNER")
-//                        .build();
-//            else return LoginDTOForResponse.builder()
-//                    .id(playerRep.findByPhoneNumber(loginDTOForRequest.getPhoneNumber()).getId())
-//                    .token(jwtUtil.encode(loginDTOForRequest.getPhoneNumber()))
-//                    .role("PLAYER")
-//                    .build();
+            return generateResponse(loadUserByUsername(loginDTOForRequest.getPhoneNumber()), loginDTOForRequest);
 
         }
         throw new AllExceptions.IllegalArgumentException("Otp code is invalid: " + loginDTOForRequest.getCode());
@@ -102,9 +90,10 @@ public class LoginService implements UserDetailsService {
         otpCache.remove(phoneNumber);
     }
 
-    public LoginDTOForResponse generateResponse(UserDetails user, String phoneNumber) {
+    public LoginDTOForResponse generateResponse(UserDetails user, LoginDTOForRequest loginDTO) {
         Map<String, List<String>> permissionsMap = new HashMap<>();
-        String role = "";
+        String role = loginDTO.isOwner() ? "OWNER" : "PLAYER";
+        UUID id = loginDTO.isOwner() ? ownerRep.findByPhoneNumber(loginDTO.getPhoneNumber()).getId() : playerRep.findByPhoneNumber(loginDTO.getPhoneNumber()).getId();
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
         int index;
         String authorityName;
@@ -112,16 +101,15 @@ public class LoginService implements UserDetailsService {
         for (GrantedAuthority authority : authorities) {
             authorityName = authority.getAuthority();
             index = authorityName.indexOf("_");
-            if (!authorityName.startsWith("ROLE_")) {
+            if (!authorityName.startsWith("ROLE_"))
                 permissionsMap.computeIfAbsent(authorityName.substring(0, index), k -> new ArrayList<>()).add(authorityName.substring(index + 1));
-            } else role = authorityName.substring(index + 1);
         }
 
         return LoginDTOForResponse.builder()
-                .userId(null) // proyektga to'g'irlaw kere
+                .userId(id)
                 .role(role)
                 .permissions(permissionsMap)
-                .token(jwtUtil.encode(phoneNumber))
+                .token(jwtUtil.encode(loginDTO.getPhoneNumber()))
                 .build();
     }
 }

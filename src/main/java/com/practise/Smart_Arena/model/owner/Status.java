@@ -1,6 +1,7 @@
 package com.practise.Smart_Arena.model.owner;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.practise.Smart_Arena.model.player.Player;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.*;
@@ -28,10 +29,13 @@ public class Status {
 
     private LocalTime endTime;
 
-    private UUID bookerId;
-
     @ManyToOne
     @JoinColumn(name = "polya_id")
     @JsonBackReference
     private Polya polya;
+
+    @ManyToOne
+    @JoinColumn(name = "player_id")
+    @JsonBackReference
+    private Player player;
 }

@@ -33,6 +33,7 @@ public class PolyaMapper {
                 .matchList(polya.getMatchList())
                 .imagesUrl(polya.getImagesUrl())
                 .orderNumber(polya.getOrderNumber())
+                .stars(polya.getStars())
                 .prise(polya.getPrise())
                 .type(polya.getType().name())
                 .build();

@@ -2,6 +2,7 @@ package com.practise.Smart_Arena.model.player;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.practise.Smart_Arena.model.owner.Status;
 import com.practise.Smart_Arena.model.privileges.Permissions;
 import com.practise.Smart_Arena.model.privileges.Role;
 import jakarta.persistence.*;
@@ -51,10 +52,18 @@ public class Player implements UserDetails {
     @JsonManagedReference
     private List<Match> matchList;
 
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Status> statusList;
+
     @ManyToOne
     @JoinColumn(name = "team_id")
     @JsonBackReference
     private Team team;
+
+    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private PlayerMatchStats playerMatchStats;
 
     private boolean isTeamOwner; // true: if has own team
 

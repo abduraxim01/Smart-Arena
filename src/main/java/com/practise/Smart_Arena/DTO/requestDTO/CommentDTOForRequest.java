@@ -11,8 +11,6 @@ public class CommentDTOForRequest {
 
     private String body;
 
-    private String playerId;
-
     private String polyaId;
 
     private float star;
