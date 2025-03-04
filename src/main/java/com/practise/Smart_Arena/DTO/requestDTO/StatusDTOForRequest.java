@@ -19,7 +19,5 @@ public class StatusDTOForRequest {
 
     private LocalTime endTime;
 
-    private UUID bookerId;
-
     private UUID polyaId;
 }

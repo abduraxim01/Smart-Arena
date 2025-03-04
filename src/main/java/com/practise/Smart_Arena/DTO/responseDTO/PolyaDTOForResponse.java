@@ -33,6 +33,8 @@ public class PolyaDTOForResponse {
 
     private double prise;
 
+    private double stars;
+
     private List<String> imagesUrl;
 
     private List<Status> statusList;

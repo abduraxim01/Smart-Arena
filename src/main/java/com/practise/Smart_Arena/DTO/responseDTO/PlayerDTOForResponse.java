@@ -1,13 +1,8 @@
 package com.practise.Smart_Arena.DTO.responseDTO;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.practise.Smart_Arena.model.player.Comment;
+import com.practise.Smart_Arena.model.player.Match;
+import com.practise.Smart_Arena.model.player.PlayerMatchStats;
 import com.practise.Smart_Arena.model.player.Team;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.Valid;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -37,7 +32,13 @@ public class PlayerDTOForResponse {
 
     private boolean isTeamOwner;
 
-    private List<CommentDTOForResponse> commentList;
+//    private List<CommentDTOForResponse> commentList;
+
+    private List<Match> matchList;
+
+    private PlayerMatchStats playerMatchStats;
+
+    private boolean isOpenJoin;
 
     private Team team;
 }

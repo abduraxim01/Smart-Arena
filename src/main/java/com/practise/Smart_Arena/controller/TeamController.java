@@ -1,5 +1,6 @@
 package com.practise.Smart_Arena.controller;
 
+import com.practise.Smart_Arena.DTO.requestDTO.InviteDTOForRequest;
 import com.practise.Smart_Arena.DTO.requestDTO.TeamDTOForRequest;
 import com.practise.Smart_Arena.exception.AllExceptions;
 import com.practise.Smart_Arena.service.TeamService;
@@ -26,5 +27,11 @@ public class TeamController {
         } catch (AllExceptions.EntityNotFoundException exception) {
             return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
         }
+    }
+
+    // did not add
+    @PostMapping(value = "/sendInviteMessage")
+    public ResponseEntity<?> sendInviteMessage(@RequestBody InviteDTOForRequest inviteDTO) {
+        return ResponseEntity.ok(null);
     }
 }

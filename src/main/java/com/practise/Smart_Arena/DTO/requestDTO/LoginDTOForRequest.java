@@ -12,4 +12,6 @@ public class LoginDTOForRequest {
     private String phoneNumber;
 
     private String code;
+
+    private boolean isOwner;
 }

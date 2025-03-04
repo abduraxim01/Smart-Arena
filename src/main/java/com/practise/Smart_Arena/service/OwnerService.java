@@ -25,10 +25,6 @@ public class OwnerService {
 
     public OwnerDTOForResponse registerOwner(OwnerDTOForRequest ownerDTO) throws ConstraintViolationException {
         phoneNumberFilter.isValidPhoneNumber(ownerDTO.getPhoneNumber());
-        if (ownRep.existsByPhoneNumber(ownerDTO.getPhoneNumber())) {
-            log.error("Phone number already exists: {}", ownerDTO.getPhoneNumber());
-            throw new AllExceptions.UsernameAlreadyTakenException("Phone number already exists: " + ownerDTO.getPhoneNumber());
-        }
         if (ownerDTO.getName().length() < 3 || ownerDTO.getSurname().length() < 3) {
             log.error("User's name: {} or surname: {} is very short", ownerDTO.getName(), ownerDTO.getSurname());
             throw new AllExceptions.IllegalArgumentException("User's name or surname must be at least 3 characters");
@@ -36,6 +32,10 @@ public class OwnerService {
         if (ownerDTO.getPassport().length() < 9) {
             log.error("User's passport: {} is very short", ownerDTO.getPassport());
             throw new AllExceptions.IllegalArgumentException("User's passport must be at least 9 characters");
+        }
+        if (ownRep.existsByPhoneNumber(ownerDTO.getPhoneNumber())) {
+            log.error("PhoneNumber: {} already exists as Owner", ownerDTO.getPhoneNumber());
+            throw new AllExceptions.UsernameAlreadyTakenException("PhoneNumber: " + ownerDTO.getPhoneNumber() + " already exists as Owner");
         }
         log.info("New owner registered name: {} phone number: {}", ownerDTO.getName(), ownerDTO.getPhoneNumber());
         return ownMap.toDTO(ownRep.save(ownMap.toModel(ownerDTO)));

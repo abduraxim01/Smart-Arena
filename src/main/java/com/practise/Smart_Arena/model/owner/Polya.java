@@ -34,6 +34,8 @@ public class Polya {
 
     private List<String> imagesUrl;
 
+    private double stars;
+
     @OneToMany(mappedBy = "polya", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Status> statusList;
