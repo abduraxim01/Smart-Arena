@@ -29,6 +29,7 @@ public class MatchService {
 
     final private MatchMapper matchMap = new MatchMapper();
 
+
     public MatchDTOForResponse createMatch(MatchDTOForRequest matchDTO) {
         Player player = playerRep.findById(matchDTO.getBookerId()).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Player not found"));
         Polya polya = polyaRep.findById(matchDTO.getPolyaId()).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Polya not found"));

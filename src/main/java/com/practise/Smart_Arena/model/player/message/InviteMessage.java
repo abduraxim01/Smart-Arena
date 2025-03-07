@@ -1,4 +1,4 @@
-package com.practise.Smart_Arena.model.player;
+package com.practise.Smart_Arena.model.player.message;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

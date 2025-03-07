@@ -4,12 +4,11 @@ import com.practise.Smart_Arena.DTO.requestDTO.PolyaDTOForRequest;
 import com.practise.Smart_Arena.DTO.responseDTO.PolyaDTOForResponse;
 import com.practise.Smart_Arena.exception.AllExceptions;
 import com.practise.Smart_Arena.mapper.PolyaMapper;
-import com.practise.Smart_Arena.model.owner.Polya;
 import com.practise.Smart_Arena.model.owner.Stadium;
-import com.practise.Smart_Arena.repository.CommentRepository;
 import com.practise.Smart_Arena.repository.PolyaRepository;
 import com.practise.Smart_Arena.repository.StadiumRepository;
 import com.practise.Smart_Arena.service.imageService.ImageService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,23 +17,21 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class PolyaService {
 
     final private PolyaRepository polyaRep;
 
     final private StadiumRepository stadiumRep;
 
-    final private CommentRepository commentRep;
-
     final private ImageService imageSer;
 
     final private PolyaMapper polyaMap = new PolyaMapper();
 
     @Autowired
-    public PolyaService(PolyaRepository polyaRep, StadiumRepository stadiumRep, CommentRepository commentRep, ImageService imageSer) {
+    public PolyaService(PolyaRepository polyaRep, StadiumRepository stadiumRep, ImageService imageSer) {
         this.polyaRep = polyaRep;
         this.stadiumRep = stadiumRep;
-        this.commentRep = commentRep;
         this.imageSer = imageSer;
     }
 
