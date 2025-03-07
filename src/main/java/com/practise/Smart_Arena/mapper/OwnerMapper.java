@@ -4,7 +4,9 @@ import com.practise.Smart_Arena.DTO.requestDTO.OwnerDTOForRequest;
 import com.practise.Smart_Arena.DTO.responseDTO.OwnerDTOForResponse;
 import com.practise.Smart_Arena.model.owner.Owner;
 import com.practise.Smart_Arena.model.privileges.Role;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OwnerMapper {
 
     final private StadiumMapper stadiumMap = new StadiumMapper();

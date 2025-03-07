@@ -1,6 +1,7 @@
 package com.practise.Smart_Arena.controller;
 
 import com.practise.Smart_Arena.DTO.requestDTO.CommentDTOForRequest;
+import com.practise.Smart_Arena.DTO.responseDTO.CommentDTOForResponse;
 import com.practise.Smart_Arena.exception.AllExceptions;
 import com.practise.Smart_Arena.model.player.Player;
 import com.practise.Smart_Arena.service.CommentService;
@@ -19,17 +20,17 @@ import java.util.UUID;
 @RequestMapping(value = "/api/comment")
 public class CommentController {
 
+    final private CommentService commentSer;
+
     @Autowired
-    private CommentService commentSer;
+    public CommentController(CommentService commentSer) {
+        this.commentSer = commentSer;
+    }
 
     @PreAuthorize(value = "hasRole('PLAYER')")
     @PostMapping(value = "/createComment")
-    public ResponseEntity<?> createComment(@RequestBody CommentDTOForRequest commentDTO, Authentication authentication) {
-        try {
-            UUID playerId = ((Player) authentication.getPrincipal()).getId();
-            return ResponseEntity.ok(commentSer.createComment(commentDTO,playerId));
-        } catch (AllExceptions.EntityNotFoundException exception) {
-            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
-        }
+    public ResponseEntity<CommentDTOForResponse> createComment(@RequestBody CommentDTOForRequest commentDTO, Authentication authentication) {
+        UUID playerId = ((Player) authentication.getPrincipal()).getId();
+        return ResponseEntity.ok(commentSer.createComment(commentDTO, playerId));
     }
 }

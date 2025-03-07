@@ -32,7 +32,7 @@ public class PlayerDTOForResponse {
 
     private boolean isTeamOwner;
 
-//    private List<CommentDTOForResponse> commentList;
+    private List<CommentDTOForResponse> commentList;
 
     private List<Match> matchList;
 

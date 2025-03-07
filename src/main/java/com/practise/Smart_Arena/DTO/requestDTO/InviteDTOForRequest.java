@@ -11,8 +11,6 @@ import java.util.UUID;
 @Builder
 public class InviteDTOForRequest {
 
-    private UUID senderId;
-
     private UUID recipientId;
 
     private String message;

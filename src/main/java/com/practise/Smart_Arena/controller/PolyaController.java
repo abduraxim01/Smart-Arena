@@ -1,6 +1,7 @@
 package com.practise.Smart_Arena.controller;
 
 import com.practise.Smart_Arena.DTO.requestDTO.PolyaDTOForRequest;
+import com.practise.Smart_Arena.DTO.responseDTO.PolyaDTOForResponse;
 import com.practise.Smart_Arena.exception.AllExceptions;
 import com.practise.Smart_Arena.service.PolyaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +18,17 @@ import java.util.UUID;
 @RequestMapping(value = "/api/polya")
 public class PolyaController {
 
+    final private PolyaService polyaSer;
+
     @Autowired
-    private PolyaService polyaSer;
+    public PolyaController(PolyaService polyaSer) {
+        this.polyaSer = polyaSer;
+    }
 
     @PreAuthorize(value = "hasRole('OWNER')")
     @PostMapping(value = "/createPolya/{stadiumId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createPolya(@PathVariable UUID stadiumId, @RequestPart("polya") PolyaDTOForRequest polyaDTO,
-                                         @RequestPart("imageList") List<MultipartFile> images) {
-        try {
-            return ResponseEntity.ok(polyaSer.createPolya(polyaDTO, images, stadiumId));
-        } catch (AllExceptions.EntityNotFoundException exception) {
-            return new ResponseEntity<>(exception.getMessage(), exception.getStatus());
-        }
+    public ResponseEntity<PolyaDTOForResponse> createPolya(@PathVariable UUID stadiumId, @RequestPart("polya") PolyaDTOForRequest polyaDTO,
+                                                           @RequestPart("imageList") List<MultipartFile> images) {
+        return ResponseEntity.ok(polyaSer.createPolya(polyaDTO, images, stadiumId));
     }
 }

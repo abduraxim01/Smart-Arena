@@ -44,8 +44,8 @@ public class PlayerMapper {
 //                .commentList(commentMap.toDTO(player.getCommentList()))
                 .team(player.getTeam())
                 .isTeamOwner(player.isTeamOwner())
-                .matchList(player.getMatchList())
-                .playerMatchStats(player.getPlayerMatchStats())
+//                .matchList(player.getMatchList())
+//                .playerMatchStats(player.getPlayerMatchStats())
                 .isOpenJoin(player.isOpenJoin())
                 .build();
     }

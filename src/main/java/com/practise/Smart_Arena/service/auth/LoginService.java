@@ -24,23 +24,29 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class LoginService implements UserDetailsService {
 
-    @Autowired
-    private OwnerRepository ownerRep;
+    final private OwnerRepository ownerRep;
 
-    @Autowired
-    private PlayerRepository playerRep;
+    final private PlayerRepository playerRep;
 
-    @Autowired
-    private SendSMSService smsSer;
+    final private SendSMSService smsSer;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    final private JwtUtil jwtUtil;
 
-    private ConcurrentHashMap<String, OtpEntry> otpCache = new ConcurrentHashMap<>();
 
     final private Logger log = LogManager.getLogger(LoginService.class);
 
-    final private PhoneNumberFilter phoneNumberFilter = new PhoneNumberFilter();
+    final private PhoneNumberFilter phoneNumberFilter;
+
+    private ConcurrentHashMap<String, OtpEntry> otpCache = new ConcurrentHashMap<>();
+
+    @Autowired
+    public LoginService(OwnerRepository ownerRep, PlayerRepository playerRep, SendSMSService smsSer, JwtUtil jwtUtil, PhoneNumberFilter phoneNumberFilter) {
+        this.ownerRep = ownerRep;
+        this.playerRep = playerRep;
+        this.smsSer = smsSer;
+        this.jwtUtil = jwtUtil;
+        this.phoneNumberFilter = phoneNumberFilter;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String phoneNumber) {

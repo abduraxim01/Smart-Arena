@@ -2,19 +2,20 @@ package com.practise.Smart_Arena.mapper;
 
 import com.practise.Smart_Arena.DTO.requestDTO.InviteDTOForRequest;
 import com.practise.Smart_Arena.DTO.responseDTO.InviteMessageDTOForResponse;
-import com.practise.Smart_Arena.model.player.InviteMessage;
+import com.practise.Smart_Arena.model.player.message.InviteMessage;
 import com.practise.Smart_Arena.model.player.Team;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class InviteMessageMapper {
 
-    public InviteMessage toModel(InviteDTOForRequest invite, Team team) {
+    public InviteMessage toModel(InviteDTOForRequest invite, Team team, UUID playerId) {
         return InviteMessage.builder()
-                .senderId(invite.getSenderId())
+                .senderId(playerId)
                 .teamId(team.getId())
                 .recipientId(invite.getRecipientId())
                 .teamName(team.getName())

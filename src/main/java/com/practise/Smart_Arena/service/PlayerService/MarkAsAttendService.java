@@ -36,7 +36,7 @@ public class MarkAsAttendService implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        scheduler.scheduleAtFixedRate(this::checkAndUpdateMatches, 0, 1, TimeUnit.MINUTES);
+//        scheduler.scheduleAtFixedRate(this::checkAndUpdateMatches, 0, 1, TimeUnit.MINUTES);
     }
 
     @PreDestroy

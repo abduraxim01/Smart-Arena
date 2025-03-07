@@ -10,6 +10,7 @@ import com.practise.Smart_Arena.model.player.Player;
 import com.practise.Smart_Arena.repository.CommentRepository;
 import com.practise.Smart_Arena.repository.PlayerRepository;
 import com.practise.Smart_Arena.repository.PolyaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class CommentService {
 
     @Autowired

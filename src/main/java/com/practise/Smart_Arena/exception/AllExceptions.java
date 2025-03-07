@@ -1,12 +1,7 @@
 package com.practise.Smart_Arena.exception;
 
-import jakarta.validation.ConstraintViolationException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.util.stream.Collectors;
 
 public class AllExceptions {
 

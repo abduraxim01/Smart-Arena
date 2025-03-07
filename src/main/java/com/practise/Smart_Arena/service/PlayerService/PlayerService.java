@@ -3,12 +3,15 @@ package com.practise.Smart_Arena.service.PlayerService;
 import com.practise.Smart_Arena.DTO.requestDTO.PlayerDTOForRequest;
 import com.practise.Smart_Arena.DTO.responseDTO.InviteMessageDTOForResponse;
 import com.practise.Smart_Arena.DTO.responseDTO.PlayerDTOForResponse;
+import com.practise.Smart_Arena.DTO.responseDTO.StatusDTOForResponse;
 import com.practise.Smart_Arena.exception.AllExceptions;
 import com.practise.Smart_Arena.mapper.InviteMessageMapper;
 import com.practise.Smart_Arena.mapper.PlayerMapper;
+import com.practise.Smart_Arena.mapper.StatusMapper;
 import com.practise.Smart_Arena.model.owner.Status;
 import com.practise.Smart_Arena.model.player.Player;
 import com.practise.Smart_Arena.repository.InviteMessageRepository;
+import com.practise.Smart_Arena.repository.OwnerRepository;
 import com.practise.Smart_Arena.repository.PlayerRepository;
 import com.practise.Smart_Arena.service.PhoneNumberFilter;
 import org.apache.logging.log4j.LogManager;
@@ -33,15 +36,21 @@ public class PlayerService {
 
     final private InviteMessageMapper invMessageMap;
 
+    final private OwnerRepository ownerRep;
+
+    final private StatusMapper statusMap;
+
     final private Logger log = LogManager.getLogger(PlayerService.class);
 
     @Autowired
-    public PlayerService(PlayerRepository playerRep, PlayerMapper playerMap, PhoneNumberFilter phoneNumberFilter, InviteMessageRepository invMessageRep, InviteMessageMapper invMessageMap) {
+    public PlayerService(PlayerRepository playerRep, PlayerMapper playerMap, PhoneNumberFilter phoneNumberFilter, InviteMessageRepository invMessageRep, InviteMessageMapper invMessageMap, OwnerRepository ownerRep, StatusMapper statusMap) {
         this.playerRep = playerRep;
         this.playerMap = playerMap;
         this.phoneNumberFilter = phoneNumberFilter;
         this.invMessageRep = invMessageRep;
         this.invMessageMap = invMessageMap;
+        this.ownerRep = ownerRep;
+        this.statusMap = statusMap;
     }
 
     public PlayerDTOForResponse registerPlayer(PlayerDTOForRequest playerDTO) {
@@ -52,6 +61,10 @@ public class PlayerService {
         }
         if (playerRep.existsByPhoneNumber(playerDTO.getPhoneNumber())) {
             log.error("PhoneNumber: {} already exists as Player", playerDTO.getPhoneNumber());
+            throw new AllExceptions.UsernameAlreadyTakenException("PhoneNumber: " + playerDTO.getPhoneNumber() + " already exists as Player");
+        }
+        if (ownerRep.existsByPhoneNumber(playerDTO.getPhoneNumber())) {
+            log.error("PhoneNumber: {} already exists as Owner", playerDTO.getPhoneNumber());
             throw new AllExceptions.UsernameAlreadyTakenException("PhoneNumber: " + playerDTO.getPhoneNumber() + " already exists as Player");
         }
         try {
@@ -71,10 +84,10 @@ public class PlayerService {
         return invMessageMap.toDTO(invMessageRep.findInviteMessageByRecipientId(playerId));
     }
 
-    public List<Status> getActiveBooks(UUID playerId) {
+    public List<StatusDTOForResponse> getActiveBooks(UUID playerId) {
         Player player = playerRep.findById(playerId).orElseThrow(() -> new AllExceptions.EntityNotFoundException("Player not found"));
-        return player.getStatusList().stream()
+        return statusMap.toDTO(player.getStatusList().stream()
                 .filter(status -> status.getEndTime().isBefore(LocalTime.now()))
-                .toList();
+                .toList());
     }
 }
